@@ -21,6 +21,7 @@ class OSStyle(Style):
         Token.Menu.Completions.ProgressButton: 'bg:#003333',
         Token.Menu.Completions.ProgressBar: 'bg:#00aaaa',
 
+        Token.Toolbar: '#ffffff bg:#333333',
         Token.Toolbar.Completions: 'bg:#888800 #000000',
         Token.Toolbar.Completions.Arrow: 'bg:#888800 #000000',
         Token.Toolbar.Completions.Completion: 'bg:#aaaa00 #000000',

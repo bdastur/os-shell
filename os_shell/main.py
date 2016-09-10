@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+import sys
 from prompt_toolkit import Application, CommandLineInterface, AbortAction
 from prompt_toolkit.buffer import AcceptAction
 from prompt_toolkit.buffer import Buffer
@@ -25,14 +26,16 @@ from style import OSStyle
 OSKeyBinder = KeyBindingManager()
 
 
-@OSKeyBinder.registry.add_binding(Keys.ControlA)
-def _anykey(event):
+@OSKeyBinder.registry.add_binding(Keys.ControlQ)
+def _controlQkey(event):
+    '''
+    Quit the program when user presses <C-Q>
+    '''
     b = event.cli.current_buffer
     b.insert_text(event.data)
     text = b.document.text
     print "text: ", text
     print event
-
 
 
 def run():
@@ -69,7 +72,17 @@ def run():
     while True:
         document = cli.run(reset_current_buffer=True)
         print "Document: ", document
+        process_document(document)
 
+
+def process_document(document):
+    '''
+    Process the executed command.
+    '''
+    # Check for any exit criterias.
+    if document.text == "quit" or document.text == "exit":
+        print "Exit now!"
+        sys.exit()
 
 
 if __name__ == '__main__':

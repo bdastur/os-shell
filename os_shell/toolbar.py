@@ -25,13 +25,17 @@ class Toolbar(object):
             shortcuts_token = Token.Toolbar.On
             shortcuts = 'ON'
 
+            #return [
+            #    (color_token, ' [F2] Color: {0} '.format(color)),
+            #    (fuzzy_token, ' [F3] Fuzzy: {0} '.format(fuzzy)),
+            #    (shortcuts_token, ' [F4] Shortcuts: {0} '.format(shortcuts)),
+            #    (Token.Toolbar, ' [F5] Refresh '),
+            #    (Token.Toolbar, ' [F9] Docs '),
+            #    (Token.Toolbar, ' [<C-Q>] Exit ')
+            #]
+
             return [
-                (color_token, ' [F2] Color: {0} '.format(color)),
-                (fuzzy_token, ' [F3] Fuzzy: {0} '.format(fuzzy)),
-                (shortcuts_token, ' [F4] Shortcuts: {0} '.format(shortcuts)),
-                (Token.Toolbar, ' [F5] Refresh '),
-                (Token.Toolbar, ' [F9] Docs '),
-                (Token.Toolbar, ' [F10] Exit ')
+                (Token.Toolbar, ' [<C-Q>] Exit ')
             ]
 
         return get_toolbar_items

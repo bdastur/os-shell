@@ -38,7 +38,7 @@ class OSCommandHelper(object):
         if command:
             os_command.extend(command)
 
-        print "OS Command: ", os_command
+        #print "OS Command: ", os_command
 
         sys.stdout = open(self.help_cmdfile, "w")
         OpenStackShell().run(os_command)
@@ -66,16 +66,16 @@ class OSCommandHelper(object):
 
             if re.match("optional arguments:", line):
                 # We can start parsing optional arguments.
-                print "Matched optional, set stage to 1"
+                #print "Matched optional, set stage to 1"
                 parse_stage = 1
             elif re.match("Commands:", line):
                 # We can start parsing commands
-                print "Matched, set stage 2"
+                #print "Matched, set stage 2"
                 parse_stage = 2
             elif re.match(r"Command .* matches:", line):
                 parse_stage = 3
             elif re.match(r"positional arguments:", line):
-                print "Match positional args section, stage set to 4"
+                #print "Match positional args section, stage set to 4"
                 parse_stage = 4
             elif re.match(r"output formatters:", line):
                 parse_stage = 5
