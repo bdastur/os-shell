@@ -29,7 +29,14 @@ class OSCompleter(Completer):
         The function will return the list of available subcommands,
         positional and optional arguments
         '''
-        matches = ["server", "image"]
+        print "cmdlist: ", cmdlist
+        matches = []
+        if len(cmdlist) == 1:
+            result = self.os_commandhandler.get_command_options("")
+            if result != 0:
+                return []
+            matches = self.os_commandhandler.commands
+
         return matches
 
     def get_completions(self, document, complete_event):

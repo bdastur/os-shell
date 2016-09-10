@@ -54,7 +54,6 @@ class ShellUt(unittest.TestCase):
         print "Test get_command options - level 3"
         self.get_command_options(["server", "create"])
 
-
     def test_get_command_options_image(self):
         print "Test get command options - image"
         self.get_command_options(["image"])
