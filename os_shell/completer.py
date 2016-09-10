@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import re
 from prompt_toolkit.completion import Completer, Completion
 
 
@@ -29,13 +30,41 @@ class OSCompleter(Completer):
         The function will return the list of available subcommands,
         positional and optional arguments
         '''
-        print "cmdlist: ", cmdlist
         matches = []
-        if len(cmdlist) == 1:
-            result = self.os_commandhandler.get_command_options("")
-            if result != 0:
-                return []
-            matches = self.os_commandhandler.commands
+
+        result = self.os_commandhandler.get_command_options("")
+        cmdobj = self.os_commandhandler.commands
+
+        command = []
+        for loc in cmdlist:
+
+            if loc.startswith("-") or loc.startswith("--"):
+                continue
+
+            command.append(loc)
+            if loc in cmdobj:
+                result = self.os_commandhandler.get_command_options(command)
+                if result != 0:
+                    break
+                cmdobj = self.os_commandhandler.commands
+            else:
+                matchstr = r"%s.*" % loc
+                for option in cmdobj:
+                    if re.match(matchstr, option):
+                        matches.append(option)
+                return matches
+
+        matches = cmdobj
+        optional_args = set()
+        for option in self.os_commandhandler.optional_arguments:
+            optional_args.add(option[0])
+
+        positional_args = set()
+        for option in self.os_commandhandler.positional_arguments:
+            positional_args.add(option[0])
+
+        matches.extend(list(positional_args))
+        matches.extend(list(optional_args))
 
         return matches
 
