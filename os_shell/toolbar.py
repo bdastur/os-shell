@@ -35,7 +35,7 @@ class Toolbar(object):
             #]
 
             return [
-                (Token.Toolbar, ' [<C-Q>] Exit ')
+                (Token.Toolbar, " [Type 'quit' or 'exit'] to Exit ")
             ]
 
         return get_toolbar_items

@@ -23,10 +23,23 @@ class OSCommandHelper(object):
     '''
     def __init__(self):
         self.help_cmdfile = "/tmp/oshelpoutput.txt"
+
+        self.cached_optional_arguments = {}
+        self.cached_commands = {}
+        self.cached_positional_arguments = {}
+        self.cached_output_formatters = {}
+
         self.optional_arguments = []
         self.positional_arguments = []
         self.commands = []
         self.output_formatters = []
+
+        # Let's initially cache the toplevel commands, to remove initial
+        # latency during command input.
+        print "Creating initial cache.."
+        ret = self.get_command_options("")
+        if ret != 0:
+            print "Failed to cache os commands"
 
     def get_openstack_help_options(self, command):
         '''
@@ -43,7 +56,35 @@ class OSCommandHelper(object):
         sys.stdout = open(self.help_cmdfile, "w")
         OpenStackShell().run(os_command)
 
-    def parse_cmdoutput_file(self):
+    def get_cachekey_from_cmdlist(self, cmdlist):
+        '''
+        Return a string that can be used as a key to index
+        the cached commands and arguments.
+        '''
+        cachekey = "help"
+        for command in cmdlist:
+            cachekey += "_" + command
+
+        return cachekey
+
+    def update_current_options_from_cache(self, cachekey):
+        '''
+        If we have cached options then we use them.
+        '''
+
+        if self.cached_commands.get(cachekey, None) is not None:
+            self.commands = self.cached_commands[cachekey]
+            self.optional_arguments = self.cached_optional_arguments[cachekey]
+            self.positional_arguments = \
+                self.cached_positional_arguments[cachekey]
+            return 0
+
+        self.cached_commands[cachekey] = []
+        self.cached_optional_arguments[cachekey] = []
+        self.cached_positional_arguments[cachekey] = []
+        return 1
+
+    def parse_cmdoutput_file(self, cachekey):
         '''
         Parse the help_cmdfile output.
         '''
@@ -85,7 +126,8 @@ class OSCommandHelper(object):
                     temp = line.split()
                     option = temp[0]
                     helpstr = " ".join(temp[1:])
-                    self.optional_arguments.append((option, helpstr))
+                    self.cached_optional_arguments[cachekey].append(
+                        (option, helpstr))
             elif parse_stage == 2:
                 temp = line.split()
                 command = temp[0]
@@ -98,9 +140,15 @@ class OSCommandHelper(object):
                 temp = line.split()
                 option = temp[0]
                 helpstr = " ".join(temp[1:])
-                self.positional_arguments.append((option, helpstr))
+                self.cached_positional_arguments[cachekey].append(
+                    (option, helpstr))
 
-        self.commands = sorted(list(commands))
+        self.cached_commands[cachekey] = sorted(list(commands))
+
+        ret = self.update_current_options_from_cache(cachekey)
+        if ret != 0:
+            return 1
+
         return 0
 
     def get_command_options(self, cmdlist):
@@ -110,13 +158,20 @@ class OSCommandHelper(object):
             the top level.
             If cmd is "server", it will list all the commands within server.
         '''
+        cachekey = self.get_cachekey_from_cmdlist(cmdlist)
+        ret = self.update_current_options_from_cache(cachekey)
+        if ret == 0:
+            return 0
+
         helper_process = Process(target=self.get_openstack_help_options,
                                  args=(cmdlist,))
         helper_process.start()
         helper_process.join()
-        result = self.parse_cmdoutput_file()
+
+        result = self.parse_cmdoutput_file(cachekey)
+
         if result != 0:
             print "Failed to parse"
-            return (1, None, None)
+            return 1
 
         return 0
