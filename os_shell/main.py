@@ -46,10 +46,10 @@ def run():
     toolbar = Toolbar()
 
     layout = create_prompt_layout(
-            message="openstack> ",
-            lexer=OSLexer,
-            get_bottom_toolbar_tokens=toolbar.handler,
-            reserve_space_for_menu=12)
+        message="openstack> ",
+        lexer=OSLexer,
+        get_bottom_toolbar_tokens=toolbar.handler,
+        reserve_space_for_menu=12)
 
     cli_buffer = Buffer(
         accept_action=AcceptAction.RETURN_DOCUMENT,
