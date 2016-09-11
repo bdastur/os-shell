@@ -41,6 +41,32 @@ class OSCommandHelper(object):
         if ret != 0:
             print "Failed to cache os commands"
 
+    def get_current_optional_arguments(self):
+        '''
+        Return a list of current optional arguments.
+        '''
+        optional_args = []
+        for option in self.optional_arguments:
+            optional_args.append(option[0])
+
+        return optional_args
+
+    def get_current_commands(self):
+        '''
+        Return the current commands
+        '''
+        return self.commands
+
+    def get_current_positional_arguments(self):
+        '''
+        Return positional arguments
+        '''
+        positional_args = []
+        for option in self.positional_arguments:
+            positional_args.append(option[0])
+
+        return positional_args
+
     def get_openstack_help_options(self, command):
         '''
         Execute the help command. This function  will be

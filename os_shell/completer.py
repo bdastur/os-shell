@@ -32,22 +32,46 @@ class OSCompleter(Completer):
         '''
         matches = []
 
-        result = self.os_commandhandler.get_command_options("")
-        cmdobj = self.os_commandhandler.commands
+        # At anytime we only deal with the most recent command.
+        # Since we have already processed the previous commands.
+        processed_cmds = cmdlist[:-1]
+
+        # Get all the available cmd options to begin with.
+        if len(cmdlist) <= 1:
+            result = self.os_commandhandler.get_command_options("")
+
+        # Get the latest command options.
+        cmdobj = self.os_commandhandler.get_current_commands()
 
         command = []
         for loc in cmdlist:
-
-            if loc.startswith("-") or loc.startswith("--"):
+            command.append(loc)
+            if loc in processed_cmds:
+                # if we have processed this token, skip it.
                 continue
 
-            command.append(loc)
+            # If we are parsing optional arguments, we do not need
+            # to update the cached options. We will use existing cache.
+            # also only return optional argument matches.
+            if loc.startswith("-") or loc.startswith("--"):
+                matchstr = r"%s.*" % loc
+                cmdopts = \
+                    self.os_commandhandler.get_current_optional_arguments()
+                for option in cmdopts:
+                    if re.match(matchstr, option):
+                        matches.append(option)
+                return matches
+
+            # If the token is actually present in the options, we will
+            # retrieve the relevant options for this command.
             if loc in cmdobj:
                 result = self.os_commandhandler.get_command_options(command)
                 if result != 0:
                     break
-                cmdobj = self.os_commandhandler.commands
+                cmdobj = self.os_commandhandler.get_current_commands()
             else:
+                # If we could not match the complete token, try a partial
+                # match from available options at the moment.
                 matchstr = r"%s.*" % loc
                 for option in cmdobj:
                     if re.match(matchstr, option):
@@ -55,16 +79,13 @@ class OSCompleter(Completer):
                 return matches
 
         matches = cmdobj
-        optional_args = set()
-        for option in self.os_commandhandler.optional_arguments:
-            optional_args.add(option[0])
+        optional_args = self.os_commandhandler.get_current_optional_arguments()
 
-        positional_args = set()
-        for option in self.os_commandhandler.positional_arguments:
-            positional_args.add(option[0])
+        positional_args = \
+            self.os_commandhandler.get_current_positional_arguments()
 
-        matches.extend(list(positional_args))
-        matches.extend(list(optional_args))
+        matches.extend(positional_args)
+        matches.extend(optional_args)
 
         return matches
 
