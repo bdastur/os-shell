@@ -94,9 +94,13 @@ class OSCommandHelper(object):
             except IOError:
                 print "Failed to open %s " % output_file
                 return
-        print "CMD: ", cmdlist
 
-        OpenStackShell().run(cmdlist)
+        trimmed_cmdlist = []
+        for cmd in cmdlist:
+            if cmd != "" and cmd != " ":
+                trimmed_cmdlist.append(cmd)
+
+        OpenStackShell().run(trimmed_cmdlist)
 
     def trigger_openstack_cli(self,
                               cmdlist,
