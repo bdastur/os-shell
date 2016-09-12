@@ -82,6 +82,12 @@ class OSCommandHelper(object):
         sys.stdout = open(self.help_cmdfile, "w")
         OpenStackShell().run(os_command)
 
+    def execute_openstack_cli(self, cmdlist):
+        '''
+        Execute the Openstack command.
+        '''
+        OpenStackShell().run(cmdlist)
+
     def get_cachekey_from_cmdlist(self, cmdlist):
         '''
         Return a string that can be used as a key to index
