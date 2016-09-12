@@ -21,7 +21,7 @@ class OSCommandHelper(object):
     '''
     The class to interface with Openstack Client
     '''
-    def __init__(self):
+    def __init__(self, skip_cache=False):
         self.help_cmdfile = "/tmp/oshelpoutput.txt"
 
         self.cached_optional_arguments = {}
@@ -36,10 +36,11 @@ class OSCommandHelper(object):
 
         # Let's initially cache the toplevel commands, to remove initial
         # latency during command input.
-        print "Creating initial cache.."
-        ret = self.get_command_options("")
-        if ret != 0:
-            print "Failed to cache os commands"
+        if not skip_cache:
+            print "Creating initial cache.."
+            ret = self.get_command_options("")
+            if ret != 0:
+                print "Failed to cache os commands"
 
     def get_current_optional_arguments(self):
         '''
@@ -82,11 +83,31 @@ class OSCommandHelper(object):
         sys.stdout = open(self.help_cmdfile, "w")
         OpenStackShell().run(os_command)
 
-    def execute_openstack_cli(self, cmdlist):
+    def execute_openstack_cli(self, cmdlist,
+                              output_file=None):
         '''
         Execute the Openstack command.
         '''
+        if output_file:
+            try:
+                sys.stdout = open(output_file, "w")
+            except IOError:
+                print "Failed to open %s " % output_file
+                return
+        print "CMD: ", cmdlist
+
         OpenStackShell().run(cmdlist)
+
+    def trigger_openstack_cli(self,
+                              cmdlist,
+                              output_file=None):
+        '''
+        Trigger openstack cli in a new process.
+        '''
+        helper_process = Process(target=self.execute_openstack_cli,
+                                 args=(cmdlist, output_file,))
+        helper_process.start()
+        helper_process.join()
 
     def get_cachekey_from_cmdlist(self, cmdlist):
         '''

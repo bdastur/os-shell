@@ -10,8 +10,9 @@ class OSCompleter(Completer):
     Our Custom Completer, which is a subclass of the prompt_toolkit
     Completer class.
     '''
-    def __init__(self, os_commandhandler):
+    def __init__(self, os_commandhandler, resource):
         self.os_commandhandler = os_commandhandler
+        self.os_resource = resource
 
     def parse_document(self, document):
         '''
@@ -25,6 +26,24 @@ class OSCompleter(Completer):
 
         return cmdlist
 
+    def get_variable_resource_options(self, cmds):
+        matches = []
+        if len(cmds) <= 1:
+            return (1, matches)
+
+        option = cmds[len(cmds) - 1]
+        if option == "--image".strip():
+            (ret, matches) = self.os_resource.get_image_list()
+            if ret == 0:
+                print "matches: ", matches
+                return (0, matches)
+        elif option == "--flavor".strip():
+            (ret, matches) = self.os_resource.get_flavor_list()
+            if ret == 0:
+                return (0, matches)
+
+        return (1, matches)
+
     def get_current_command_options(self, cmdlist):
         '''
         The function will return the list of available subcommands,
@@ -35,6 +54,9 @@ class OSCompleter(Completer):
         # At anytime we only deal with the most recent command.
         # Since we have already processed the previous commands.
         processed_cmds = cmdlist[:-1]
+        #(ret, matches) = self.get_variable_resource_options(processed_cmds)
+        #if ret == 0:
+        #    return matches
 
         # Get all the available cmd options to begin with.
         if len(cmdlist) <= 1:
