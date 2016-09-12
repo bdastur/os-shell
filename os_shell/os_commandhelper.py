@@ -99,8 +99,11 @@ class OSCommandHelper(object):
         for cmd in cmdlist:
             if cmd != "" and cmd != " ":
                 trimmed_cmdlist.append(cmd)
-
-        OpenStackShell().run(trimmed_cmdlist)
+        try:
+            OpenStackShell().run(trimmed_cmdlist)
+        except Exception as osexception:
+            print "Failed operation [%s], [%s]" % \
+                (trimmed_cmdlist, osexception)
 
     def trigger_openstack_cli(self,
                               cmdlist,

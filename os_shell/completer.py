@@ -35,8 +35,8 @@ class OSCompleter(Completer):
         if option == "--image".strip():
             (ret, matches) = self.os_resource.get_image_list()
             if ret == 0:
-                print "matches: ", matches
                 return (0, matches)
+
         elif option == "--flavor".strip():
             (ret, matches) = self.os_resource.get_flavor_list()
             if ret == 0:
@@ -54,9 +54,9 @@ class OSCompleter(Completer):
         # At anytime we only deal with the most recent command.
         # Since we have already processed the previous commands.
         processed_cmds = cmdlist[:-1]
-        #(ret, matches) = self.get_variable_resource_options(processed_cmds)
-        #if ret == 0:
-        #    return matches
+        (ret, matches) = self.get_variable_resource_options(processed_cmds)
+        if ret == 0:
+            return matches
 
         # Get all the available cmd options to begin with.
         if len(cmdlist) <= 1:
