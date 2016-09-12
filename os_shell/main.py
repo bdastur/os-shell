@@ -3,6 +3,7 @@
 
 from __future__ import unicode_literals
 import sys
+import os
 from prompt_toolkit import Application, CommandLineInterface, AbortAction
 from prompt_toolkit.buffer import AcceptAction
 from prompt_toolkit.buffer import Buffer
@@ -47,6 +48,25 @@ def _tabkeyhandler(event):
     pass
 
 
+def validate_osenvironment():
+    '''
+    We expect the OS ENV variables to be set when executing.
+    '''
+    required_env_settings = [
+        "OS_USERNAME", "OS_PASSWORD", "OS_AUTH_URL"
+    ]
+
+    invalid_settings = []
+    for env_setting in required_env_settings:
+        if os.environ.get(env_setting, None) is None:
+            invalid_settings.append(env_setting)
+
+    if invalid_settings:
+        invalid_envstr = " ".join(invalid_settings)
+        invalid_envstr += invalid_envstr + " - Not Set"
+        print invalid_envstr
+        sys.exit()
+
 
 def print_banner():
     '''
@@ -63,6 +83,7 @@ def print_banner():
 
 
 def run():
+    validate_osenvironment()
     print_banner()
     history = InMemoryHistory()
 
