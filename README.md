@@ -2,7 +2,7 @@
 ---
 An interactive OpenStack command shell.
 
-![alt text](https://github.com/bdastur/docs/images/os_shell_cmdline.gif "Interactive Shell")
+![alt text](https://github.com/bdastur/os-shell/blob/master/docs/images/os_shell_cmdline.gif "Interactive Shell")
 
 
 
