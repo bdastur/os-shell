@@ -38,7 +38,22 @@ def _controlQkey(event):
     print event
 
 
+def print_banner():
+    '''
+    Print the OS-Shell Banner.
+    '''
+    try:
+        fhandle = open("./DATA/banner.txt", "r")
+    except IOError:
+        print "OS-Shell."
+    else:
+        banner_str = fhandle.read()
+        fhandle.close()
+        print banner_str
+
+
 def run():
+    print_banner()
     history = InMemoryHistory()
 
     os_commandhelper = OSCommandHelper()
@@ -83,6 +98,13 @@ def process_document(document):
     if document.text == "quit" or document.text == "exit":
         print "Exit now!"
         sys.exit()
+
+    # Perform our operation.
+    cmdlist = document.text.split(" ")
+    os_cmdhandler = OSCommandHelper()
+    os_cmdhandler.execute_openstack_cli(cmdlist)
+
+
 
 
 if __name__ == '__main__':
