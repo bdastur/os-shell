@@ -39,6 +39,15 @@ def _controlQkey(event):
     print event
 
 
+@OSKeyBinder.registry.add_binding(Keys.Tab)
+def _tabkeyhandler(event):
+    '''
+    Force autocompletion at cursor
+    '''
+    pass
+
+
+
 def print_banner():
     '''
     Print the OS-Shell Banner.
