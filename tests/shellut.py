@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from os_commandhelper import OSCommandHelper
+import json
+from os_shell.os_commandhelper import OSCommandHelper
 
 
 class ShellUt(unittest.TestCase):
@@ -91,4 +92,39 @@ class ShellUt(unittest.TestCase):
         cmdlist = ["server", "create"]
         cachekey = cmdhelper.get_cachekey_from_cmdlist(cmdlist)
         print "cachekey:", cachekey, "len: ", len(cachekey)
+
+    def test_trigger_openstack_cli(self):
+        print "Test trigger_openstack_cli"
+        cmd = "image list --format json".split()
+        output_file = "/tmp/osresource.txt"
+        cmdhelper = OSCommandHelper()
+        self.failUnless(cmdhelper is not None)
+
+        cmdhelper.trigger_openstack_cli(cmd,
+                                        output_file=output_file)
+
+        with open(output_file, "r") as resource_file:
+            try:
+                data = json.loads(resource_file.read())
+            except ValueError:
+                data = None
+
+        print "Data: ", data
+
+    def test_trigger_openstack_cli_flavor(self):
+        print "Test trigger openstack cli - flavor list"
+        cmd = "flavor list --format json".split()
+        output_file = "/tmp/osresource.txt"
+        cmdhelper = OSCommandHelper()
+        self.failUnless(cmdhelper is not None)
+
+        cmdhelper.trigger_openstack_cli(cmd,
+                                        output_file=output_file)
+        with open(output_file, "r") as resource_file:
+            try:
+                data = json.loads(resource_file.read())
+            except ValueError:
+                data = None
+
+        print "Data: ", data
 

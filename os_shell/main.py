@@ -18,6 +18,7 @@ from prompt_toolkit.styles import PygmentsStyle
 
 from os_shell.completer import OSCompleter
 from os_shell.os_commandhelper import OSCommandHelper
+from os_shell.resources import Resource
 from os_shell.toolbar import Toolbar
 from os_shell.lexer import OSLexer
 from os_shell.style import OSStyle
@@ -57,7 +58,8 @@ def run():
     history = InMemoryHistory()
 
     os_commandhelper = OSCommandHelper()
-    os_completer = OSCompleter(os_commandhelper)
+    resource = Resource()
+    os_completer = OSCompleter(os_commandhelper, resource)
     toolbar = Toolbar()
 
     layout = create_prompt_layout(
@@ -86,7 +88,6 @@ def run():
 
     while True:
         document = cli.run(reset_current_buffer=True)
-        print "Document: ", document
         process_document(document)
 
 
@@ -99,9 +100,12 @@ def process_document(document):
         print "Exit now!"
         sys.exit()
 
+    if len(document.text) == 0:
+        return
+
     # Perform our operation.
     cmdlist = document.text.split(" ")
-    os_cmdhandler = OSCommandHelper()
+    os_cmdhandler = OSCommandHelper(skip_cache=True)
     os_cmdhandler.execute_openstack_cli(cmdlist)
 
 
