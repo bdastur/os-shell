@@ -16,11 +16,11 @@ from prompt_toolkit.shortcuts import create_eventloop, create_prompt_layout
 from prompt_toolkit.styles import PygmentsStyle
 
 
-from completer import OSCompleter
-from os_commandhelper import OSCommandHelper
-from toolbar import Toolbar
-from lexer import OSLexer
-from style import OSStyle
+from os_shell.completer import OSCompleter
+from os_shell.os_commandhelper import OSCommandHelper
+from os_shell.toolbar import Toolbar
+from os_shell.lexer import OSLexer
+from os_shell.style import OSStyle
 
 
 OSKeyBinder = KeyBindingManager()
