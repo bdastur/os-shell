@@ -42,6 +42,11 @@ class OSCompleter(Completer):
             if ret == 0:
                 return (0, matches)
 
+        elif option == "--nic".strip():
+            (ret, matches) = self.os_resource.get_network_list()
+            if ret == 0:
+                return (0, matches)
+
         return (1, matches)
 
     def get_current_command_options(self, cmdlist):

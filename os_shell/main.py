@@ -72,14 +72,17 @@ def print_banner():
     '''
     Print the OS-Shell Banner.
     '''
-    try:
-        fhandle = open("./DATA/banner.txt", "r")
-    except IOError:
-        print "OS-Shell."
-    else:
-        banner_str = fhandle.read()
-        fhandle.close()
-        print banner_str
+    banner_str = \
+        """
+         ____   _____       _____ _          _ _
+        / __ \ / ____|     / ____| |        | | |
+       | |  | | (___ _____| (___ | |__   ___| | |
+       | |  | |\___ \______\___ \| '_ \ / _ \ | |
+       | |__| |____) |     ____) | | | |  __/ | |
+        \____/|_____/     |_____/|_| |_|\___|_|_|
+        """
+    print banner_str
+    print "An Interactive OpenStack Command Execution Shell.."
 
 
 def run():
