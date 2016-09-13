@@ -19,7 +19,7 @@ If you are not installing in a virtualenv, run:
 sudo pip install os-shell
 ```
 
-## Supported Python Versins.
+## Supported Python Versions.
 Currently supported version of python:
 
   * 2.7.x and greater
