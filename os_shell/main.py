@@ -25,7 +25,10 @@ from os_shell.lexer import OSLexer
 from os_shell.style import OSStyle
 
 
-OSKeyBinder = KeyBindingManager()
+OSKeyBinder = KeyBindingManager(enable_search=True,
+                                enable_abort_and_exit_bindings=True,
+                                enable_system_bindings=True,
+                                enable_auto_suggest_bindings=True)
 
 
 @OSKeyBinder.registry.add_binding(Keys.ControlQ)
@@ -120,14 +123,23 @@ def run():
                                eventloop=create_eventloop())
 
     while True:
-        document = cli.run(reset_current_buffer=True)
-        process_document(document)
+        try:
+            document = cli.run(reset_current_buffer=True)
+            process_document(document)
+        except KeyboardInterrupt:
+            # A keyboardInterrupt generated possibly due to Ctrl-C
+            print "Keyboard Interrupt Generated"
+            continue
+        except EOFError:
+            print "cntl-D"
+            sys.exit()
 
 
 def process_document(document):
     '''
     Process the executed command.
     '''
+
     # Check for any exit criterias.
     if document.text == "quit" or document.text == "exit":
         print "Exit now!"
