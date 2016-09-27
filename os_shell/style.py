@@ -7,7 +7,8 @@ from pygments.token import Token
 
 class OSStyle(Style):
     styles = {
-        Token.Keyword: '#3498DB',
+        Token.Keyword: '#1a1aff',
+        Token.Operator: '#558000',
         Token.String: '#E67E22',
         Token.Name: '#1ABC9C',
         Token.Pattern: '#E74C3C',
