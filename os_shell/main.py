@@ -11,18 +11,18 @@ from prompt_toolkit.history import InMemoryHistory
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.key_binding.manager import KeyBindingManager
 from prompt_toolkit.keys import Keys
-from prompt_toolkit.shortcuts import create_eventloop, create_prompt_layout
-
+#from prompt_toolkit.shortcuts import create_eventloop, create_prompt_layout
+from prompt_toolkit.shortcuts import create_eventloop
 
 from prompt_toolkit.styles import PygmentsStyle
-
 
 from os_shell.completer import OSCompleter
 from os_shell.os_commandhelper import OSCommandHelper
 from os_shell.resources import Resource
 from os_shell.toolbar import Toolbar
-from os_shell.lexer import OSLexer
+#from os_shell.lexer import OSLexer
 from os_shell.style import OSStyle
+from os_shell.layout import OSLayout
 
 
 OSKeyBinder = KeyBindingManager(enable_search=True,
@@ -96,13 +96,17 @@ def run():
     os_commandhelper = OSCommandHelper()
     resource = Resource()
     os_completer = OSCompleter(os_commandhelper, resource)
-    toolbar = Toolbar()
+    #toolbar = Toolbar()
 
-    layout = create_prompt_layout(
-        message="openstack> ",
-        lexer=OSLexer,
-        get_bottom_toolbar_tokens=toolbar.handler,
-        reserve_space_for_menu=12)
+    lt = OSLayout()
+    layout = lt.get_layout()
+
+
+    #layout = create_prompt_layout(
+    #    message="openstack> ",
+    #    lexer=OSLexer,
+    #    get_bottom_toolbar_tokens=toolbar.handler,
+    #    reserve_space_for_menu=12)
 
     cli_buffer = Buffer(
         accept_action=AcceptAction.RETURN_DOCUMENT,
