@@ -5,22 +5,16 @@ from __future__ import unicode_literals
 import sys
 import os
 from prompt_toolkit import Application, CommandLineInterface, AbortAction
-from prompt_toolkit.buffer import AcceptAction
-from prompt_toolkit.buffer import Buffer
-from prompt_toolkit.history import InMemoryHistory
-from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.key_binding.manager import KeyBindingManager
 from prompt_toolkit.keys import Keys
 from prompt_toolkit.shortcuts import create_eventloop
 
 from prompt_toolkit.styles import PygmentsStyle
 
-from os_shell.completer import OSCompleter
 from os_shell.os_commandhelper import OSCommandHelper
-from os_shell.resources import Resource
-from os_shell.toolbar import Toolbar
 from os_shell.style import OSStyle
 from os_shell.layout import OSLayout
+from os_shell.layout import OSBuffer
 
 
 OSKeyBinder = KeyBindingManager(enable_search=True,
@@ -89,26 +83,14 @@ def print_banner():
 def run():
     validate_osenvironment()
     print_banner()
-    history = InMemoryHistory()
-
-    os_commandhelper = OSCommandHelper()
-    resource = Resource()
-    os_completer = OSCompleter(os_commandhelper, resource)
 
     ltobj = OSLayout()
-    layout = ltobj.get_layout()
-
-    cli_buffer = Buffer(
-        accept_action=AcceptAction.RETURN_DOCUMENT,
-        history=history,
-        auto_suggest=AutoSuggestFromHistory(),
-        completer=os_completer,
-        complete_while_typing=True)
+    cli_buffer = OSBuffer()
 
     application = Application(
         style=PygmentsStyle(OSStyle),
-        layout=layout,
-        buffer=cli_buffer,
+        layout=ltobj.layout,
+        buffers=cli_buffer.buffers,
         on_exit=AbortAction.RAISE_EXCEPTION,
         key_bindings_registry=OSKeyBinder.registry)
 
