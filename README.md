@@ -1,5 +1,8 @@
 # os-shell
 ---
+
+[![PyPI Version](https://img.shields.io/pypi/v/os-shell.svg)](https://pypi.python.org/pypi/os-shell)
+
 An interactive OpenStack command shell.
 
 ![alt text](https://github.com/bdastur/os-shell/blob/master/docs/images/os_shell_cmdline.gif "Interactive Shell")
