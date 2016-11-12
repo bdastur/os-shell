@@ -26,12 +26,14 @@ class OSCommandHelper(object):
 
         self.cached_optional_arguments = {}
         self.cached_commands = {}
+        self.cached_commands_help = {}
         self.cached_positional_arguments = {}
         self.cached_output_formatters = {}
 
         self.optional_arguments = []
         self.positional_arguments = []
         self.commands = []
+        self.commands_help = "Openstack Help:"
         self.output_formatters = []
 
         # Let's initially cache the toplevel commands, to remove initial
@@ -57,6 +59,12 @@ class OSCommandHelper(object):
         Return the current commands
         '''
         return self.commands
+
+    def get_current_commands_help(self):
+        '''
+        Return current command help
+        '''
+        return self.commands_help
 
     def get_current_positional_arguments(self):
         '''
@@ -134,12 +142,14 @@ class OSCommandHelper(object):
 
         if self.cached_commands.get(cachekey, None) is not None:
             self.commands = self.cached_commands[cachekey]
+            self.commands_help = self.cached_commands_help[cachekey]
             self.optional_arguments = self.cached_optional_arguments[cachekey]
             self.positional_arguments = \
                 self.cached_positional_arguments[cachekey]
             return 0
 
         self.cached_commands[cachekey] = []
+        self.cached_commands_help[cachekey] = "Openstack Help"
         self.cached_optional_arguments[cachekey] = []
         self.cached_positional_arguments[cachekey] = []
         return 1
@@ -158,6 +168,9 @@ class OSCommandHelper(object):
 
         data = filehandle.readlines()
         filehandle.close()
+
+        self.cached_commands_help[cachekey] = data
+
         parse_stage = None
         for line in data:
             line = line.strip()
