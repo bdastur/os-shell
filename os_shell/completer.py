@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 import re
 from prompt_toolkit.completion import Completer, Completion
 
@@ -13,6 +14,7 @@ class OSCompleter(Completer):
     def __init__(self, os_commandhandler, resource):
         self.os_commandhandler = os_commandhandler
         self.os_resource = resource
+        self.help_buffer = None
 
     def parse_document(self, document):
         '''
@@ -48,6 +50,10 @@ class OSCompleter(Completer):
                 return (0, matches)
 
         return (1, matches)
+
+    def set_command_help(self):
+        helpinfo = self.os_commandhandler.get_current_commands_help()
+        self.help_buffer.text = r"%s" % helpinfo
 
     def get_current_command_options(self, cmdlist):
         '''
@@ -87,6 +93,7 @@ class OSCompleter(Completer):
                 for option in cmdopts:
                     if re.match(matchstr, option):
                         matches.append(option)
+                self.set_command_help()
                 return matches
 
             # If the token is actually present in the options, we will
@@ -103,6 +110,7 @@ class OSCompleter(Completer):
                 for option in cmdobj:
                     if re.match(matchstr, option):
                         matches.append(option)
+                self.set_command_help()
                 return matches
 
         matches = cmdobj
@@ -114,6 +122,7 @@ class OSCompleter(Completer):
         matches.extend(positional_args)
         matches.extend(optional_args)
 
+        self.set_command_help()
         return matches
 
     def get_completions(self, document, complete_event):

@@ -84,8 +84,8 @@ def run():
     validate_osenvironment()
     print_banner()
 
-    ltobj = OSLayout()
     cli_buffer = OSBuffer()
+    ltobj = OSLayout(multiwindow=False)
 
     application = Application(
         style=PygmentsStyle(OSStyle),
