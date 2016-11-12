@@ -11,6 +11,7 @@ It serves two purposes.
 In trun it will invoke the OpenstackShell's run method to execute the tasks.
 '''
 
+from __future__ import unicode_literals
 import sys
 import re
 from openstackclient.shell import OpenStackShell
@@ -167,12 +168,18 @@ class OSCommandHelper(object):
         commands = set()
 
         data = filehandle.readlines()
+        helpmsg = ""
         filehandle.close()
 
-        self.cached_commands_help[cachekey] = data
+        self.cached_commands_help[cachekey] = str(data)
 
         parse_stage = None
         for line in data:
+
+            if parse_stage == 1 or parse_stage == 4:
+                # Skip output formatters.
+                helpmsg += line
+
             line = line.strip()
 
             if not line:
@@ -217,6 +224,7 @@ class OSCommandHelper(object):
                     (option, helpstr))
 
         self.cached_commands[cachekey] = sorted(list(commands))
+        self.cached_commands_help[cachekey] = helpmsg
 
         ret = self.update_current_options_from_cache(cachekey)
         if ret != 0:
